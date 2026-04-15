@@ -1,12 +1,12 @@
-# Agentic AI Patterns with Ollama (`qwen3.5:2b`)
+# Agentic AI Patterns with Claude Haiku 4.5 (`claude-haiku-4-5-20251001`)
 
-This workspace contains Jupyter notebooks demonstrating agentic AI patterns using local Ollama and LangGraph.
+This workspace contains Jupyter notebooks demonstrating agentic AI patterns using Claude Haiku 4.5 and LangGraph.
 
 ## What You Learn
 
 - How to build tool-using agents with current LangChain APIs.
 - How to orchestrate planning, execution, reflection, memory, and approval workflows.
-- How to keep everything local using Ollama (`qwen3.5:2b`).
+- How to use Anthropic's Claude models through LangChain with `ANTHROPIC_API_KEY`.
 
 ## Notebooks
 
@@ -76,6 +76,23 @@ flowchart TD
 	W --> S
 	S --> F[Finalize]
 ```
+
+### OpenTelemetry Tracing (Notebook 4)
+
+- Notebook 4 instruments each agent step and every LLM call with OpenTelemetry spans.
+- Spans are exported to both console and a file so you can debug routing behavior after a run.
+- The trace file is created under `trace_logs/` with a timestamped name:
+  - `04_multi_agent_supervisor_spans_YYYYMMDD_HHMMSS_microseconds.log`
+
+What is captured per span:
+
+- Span identity: `trace_id`, `span_id`, `parent_span_id`
+- Timing: `start_time`, `end_time`
+- Routing/agent metadata: `agent.pattern`, `agent.node`
+- LLM metadata: `llm.model`, `llm.prompt_length`, `llm.response_length`
+- Optional payloads for local debugging: `llm.prompt`, `llm.response`
+
+This gives you end-to-end visibility for the supervisor loop: supervisor routing decision -> specialist node invocation -> finalization.
 
 ### 5) Memory-Enabled Agent
 
@@ -147,19 +164,19 @@ c:/Anil/AgenticPatterns/.venv/Scripts/python.exe -m ipykernel install --user --n
 c:/Anil/AgenticPatterns/.venv/Scripts/python.exe -m jupyter lab
 ```
 
-## Ollama
+## Claude / Anthropic
 
-Ensure Ollama is running and model exists:
+Set the API key in your environment before running the notebooks:
 
 ```powershell
-ollama list
+$env:ANTHROPIC_API_KEY = "your-key-here"
 ```
 
-Expected model in this project: `qwen3.5:2b`
+Expected model in this project: `claude-haiku-4-5-20251001`
 
 ## Notes
 
-- All notebooks use local model calls via `langchain-ollama`.
+- All notebooks use Claude via `langchain-anthropic`.
 - Agent construction uses `langchain.agents.create_agent` (current API in LangChain 1.2.x).
 - If a notebook is slow, reduce prompt complexity or iterations.
 - Mermaid diagrams above render in GitHub and many Markdown viewers; they act as lightweight pattern visuals inside this README.

@@ -1,6 +1,6 @@
 langchain
 langchain-core
-langchain-ollama
+langchain-anthropic
 langgraph
 opentelemetry-api
 opentelemetry-sdk
